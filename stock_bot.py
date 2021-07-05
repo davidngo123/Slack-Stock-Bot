@@ -7,7 +7,6 @@ from pathlib import Path
 
 env_path = Path('.') / '.env'
 load_dotenv(dotenv_path=env_path)
-
 @RTMClient.run_on(event="message")
 def stockbot(**payload):
     """
@@ -38,13 +37,13 @@ def stockbot(**payload):
             response += '>``` remind [\'stock name\'] ... - Mention the user\'s and says their saved stock price every morning ```\n'
             response += 'Please note you can have multiple stock searches if you include spaces and you must mention me'
         elif "price" in text[1]:
-            response = "GOOG"
+            response = getPrice(text[2])
         elif "info" in text[1]:
-            response = "GOOG"
+            response = getInfo(text[2])
         elif "graph" in text[1]:
             response = "GOOG"
-        elif "remind" in text[1]:
-            response = "GOOG"
+        elif "remind" in text[1] and text.len() == 3:
+            response = "I have set up the alert for " + text[2] + " every day at 9 A.M"
         else:
             response = "I'm sorry I don't understand your command"
         
