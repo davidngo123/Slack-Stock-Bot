@@ -1,3 +1,10 @@
+"""
+Acesses Yahoo Finance for stock data and retrieves
+the most important pieces of info. 
+
+"""
+
+
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.chrome.options import Options
@@ -20,6 +27,8 @@ def scrape(symbol):
     soup = BeautifulSoup(page_source, 'lxml')
     return soup
 
+# Sets up the page that will be scraped for historical data 
+
 def scrape_hist(symbol):  
     options = Options()
     options.headless = True
@@ -32,8 +41,12 @@ def scrape_hist(symbol):
     soup = BeautifulSoup(page_source, 'lxml')
     return soup
 
+# Gets the current stocks name
+
 def get_name(soup):
     return soup.find('h1', 'D(ib) Fz(18px)').get_text()
+
+# Gets the current price of the requested stock
 
 def getPrice(stock_name):
     soup = scrape(stock_name)
@@ -43,6 +56,8 @@ def getPrice(stock_name):
     price = soup.find('span', 'Trsdu(0.3s) Fw(b) Fz(36px) Mb(-4px) D(ib)').get_text()
     return 'The price of ' + name + ' is $' + price + ' at this current moment.'
     
+# Gets basic info of volume, open, closing, and range of the
+# price of a stock
 
 def getInfo(stock_name):
     soup = scrape(stock_name)
@@ -59,6 +74,7 @@ def getInfo(stock_name):
     sentence += 'The range of ' + name + ' is ' + range
     return sentence
 
+# Draws and downloads the graph of the requested stock
 def getGraph(stock_name):
     soup = scrape_hist(stock_name)
     name = get_name(soup)
@@ -85,5 +101,3 @@ def getGraph(stock_name):
     ax.axes.yaxis.set_ticklabels([])
     plt.savefig('plot.png', dpi=100)
     return prices
-
-getGraph('goog')

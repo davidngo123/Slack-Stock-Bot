@@ -1,3 +1,14 @@
+"""
+Slack Stock Bot
+
+Main client program of the stock bot. It has three main features 
+that allows for users to explore and understand stocks. It has a 
+feature to get basic information about a stock. Another one to
+get the current price of the stock. Finally, a data 
+visualizition display of the changes of the stock over the past year. 
+
+"""
+
 from slack import RTMClient
 import requests
 from stock_api import *
@@ -35,10 +46,13 @@ def stockbot(**payload):
             response += '>``` price [\'stock name\'] ... - State the current price of the stock ```\n'
             response += '>``` graph [\'stock name\'] ... - Displays the graph of the stock ```\n'
             response += 'Please note you can have multiple stock searches if you include spaces and you must mention me'
+        # Prints out the current price of the stock
         elif "price" in text[1]:
             response = getPrice(text[2])
+        # Prints out basic info about the stock
         elif "info" in text[1]:
             response = getInfo(text[2])
+        # Graphs the stocks change in price over the past year
         elif "graph" in text[1]:
             message = getGraph(text[2])
             if(message != "I don't think this stock exists"):
@@ -49,9 +63,10 @@ def stockbot(**payload):
                 )
             else:
                 response = message 
+        # If bot cannot recongnize command
         else:
             response = "I'm sorry I don't understand your command"
-        # Sending m essage back to slack
+        # Sending message back to slack
         web_client.chat_postMessage(channel=channel_id, text=response)
 
 try:
