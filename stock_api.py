@@ -3,12 +3,12 @@ from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.chrome.options import Options
 import pandas as pd
 from bs4 import BeautifulSoup
+import matplotlib.pyplot as plt
 
 """
 Initlalizes the current requested stock URL if it exists 
 """
-def scrape(symbol):
-    print('hello')  
+def scrape(symbol): 
     options = Options()
     options.headless = True
     driver = webdriver.Chrome('chromedriver.exe', options=options)
@@ -21,7 +21,9 @@ def scrape(symbol):
     return soup
 
 def scrape_hist(symbol):  
-    driver = webdriver.Chrome('chromedriver.exe')
+    options = Options()
+    options.headless = True
+    driver = webdriver.Chrome('chromedriver.exe', options=options)
     stock_url = 'https://finance.yahoo.com/quote/' + symbol + '/history?ltr=1'
     driver.get(stock_url)
     if(driver.current_url != stock_url):
@@ -59,4 +61,17 @@ def getGraph(stock_name):
         return "I don't think this stock exists"
     dates = []
     prices = []
+    data = soup.findAll('td', 'Py(10px) Ta(start) Pend(10px)')
+    for item in data:
+        dates.append(item.get_text())
+    dates.reverse()
+    price = soup.findAll('td', 'Py(10px) Pstart(10px)')
+    i = 3
+    while i < price.__len__():
+        prices.append(price[i].get_text())
+        i += 6
+    prices.reverse()
+    plt.plot(dates,prices)
+    plt.savefig('plot.png', dpi=300, bbox_inches='tight')
+    return prices
 

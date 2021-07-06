@@ -41,13 +41,20 @@ def stockbot(**payload):
         elif "info" in text[1]:
             response = getInfo(text[2])
         elif "graph" in text[1]:
-            response = "GOOG"
+            message = getGraph(text[2])
+            if(message != "I don't think this stock exists"):
+                response = web_client.files_upload(
+                    channels=channel_id,
+                    file="plot.png",
+                    title="Graph"
+                )
+            else:
+                response = message 
         elif "remind" in text[1] and text.len() == 3:
             response = "I have set up the alert for " + text[2] + " every day at 9 A.M"
         else:
             response = "I'm sorry I don't understand your command"
-        
-        # Sending message back to slack
+        # Sending m essage back to slack
         web_client.chat_postMessage(channel=channel_id, text=response)
 
 try:
