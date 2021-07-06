@@ -77,6 +77,13 @@ def getGraph(stock_name):
         i += 6
     prices.reverse()
     plt.plot(dates,prices)
-    plt.savefig('plot.png', dpi=300, bbox_inches='tight')
+    plt.title('Stock Price Change of ' + name)
+    plt.ylabel("Stock Price in USD ")
+    plt.xlabel("Dates (from months to years)")
+    ax = plt.gca()
+    ax.axes.xaxis.set_ticklabels([])
+    ax.axes.yaxis.set_ticklabels([])
+    plt.savefig('plot.png', dpi=100)
     return prices
 
+getGraph('goog')

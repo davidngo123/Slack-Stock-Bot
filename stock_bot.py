@@ -34,7 +34,6 @@ def stockbot(**payload):
             response += '>``` info [\'stock name\'] ... - Return the summary info of the stock ```\n'
             response += '>``` price [\'stock name\'] ... - State the current price of the stock ```\n'
             response += '>``` graph [\'stock name\'] ... - Displays the graph of the stock ```\n'
-            response += '>``` remind [\'stock name\'] ... - Mention the user\'s and says their saved stock price every morning ```\n'
             response += 'Please note you can have multiple stock searches if you include spaces and you must mention me'
         elif "price" in text[1]:
             response = getPrice(text[2])
@@ -50,8 +49,6 @@ def stockbot(**payload):
                 )
             else:
                 response = message 
-        elif "remind" in text[1] and text.len() == 3:
-            response = "I have set up the alert for " + text[2] + " every day at 9 A.M"
         else:
             response = "I'm sorry I don't understand your command"
         # Sending m essage back to slack
