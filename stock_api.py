@@ -11,6 +11,12 @@ from selenium.webdriver.chrome.options import Options
 import pandas as pd
 from bs4 import BeautifulSoup
 import matplotlib.pyplot as plt
+from dotenv import load_dotenv
+import os
+from pathlib import Path
+
+env_path = Path('.') / '.env'
+load_dotenv(dotenv_path=env_path)
 
 """
 Initlalizes the current requested stock URL if it exists 
@@ -76,28 +82,20 @@ def getInfo(stock_name):
 
 # Draws and downloads the graph of the requested stock
 def getGraph(stock_name):
-    soup = scrape_hist(stock_name)
-    name = get_name(soup)
-    if(soup == "Does not exist"):
-        return "I don't think this stock exists"
-    dates = []
-    prices = []
-    data = soup.findAll('td', 'Py(10px) Ta(start) Pend(10px)')
-    for item in data:
-        dates.append(item.get_text())
-    dates.reverse()
-    price = soup.findAll('td', 'Py(10px) Pstart(10px)')
-    i = 3
-    while i < price.__len__():
-        prices.append(price[i].get_text())
-        i += 6
-    prices.reverse()
-    plt.plot(dates,prices)
-    plt.title('Stock Price Change of ' + name)
-    plt.ylabel("Stock Price in USD ")
-    plt.xlabel("Dates (from months to years)")
-    ax = plt.gca()
-    ax.axes.xaxis.set_ticklabels([])
-    ax.axes.yaxis.set_ticklabels([])
-    plt.savefig('plot.png', dpi=100)
-    return prices
+    url = 'https://eodhistoricaldata.com/api/eod/' + stock_name + '.US?api_token=' + os.environ['GRAPH_TOKEN'] + '&period=m&from=2019-01-05'
+    print(url)
+    try:
+        data = pd.read_csv(url)
+        dates = data['Date']
+        prices = data['Close']
+        plt.plot(dates,prices)
+        plt.title('Stock Price Change of ' + stock_name)
+        plt.ylabel("Stock Price in USD ")
+        plt.xlabel("Dates (from months to years)")
+        ax = plt.gca()
+        ax.axes.xaxis.set_ticklabels([])
+        ax.axes.yaxis.set_ticklabels([])
+        plt.savefig('plot.png', dpi=100)
+    except:
+        return "This stock does not exist"
+    return 'Here is your graph:'
